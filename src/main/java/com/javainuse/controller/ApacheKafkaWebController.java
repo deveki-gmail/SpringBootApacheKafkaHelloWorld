@@ -13,6 +13,8 @@ import com.javainuse.service.KafkaSender;
 @RestController
 @RequestMapping(value = "/javainuse-kafka/")
 public class ApacheKafkaWebController {
+	
+	private Boolean flag = false;
 
 	@Autowired
 	KafkaSender kafkaSender;
@@ -27,24 +29,33 @@ public class ApacheKafkaWebController {
 	@GetMapping(value = "/startproducer")
 	public String start() {
 		
-		
-		new Thread(new MyRunnable(kafkaSender)).start();
+		flag = true;
+		new Thread(new MyRunnable(kafkaSender, flag)).start();
 
 		return "Producer started successfully";
+	}
+	
+	@GetMapping(value = "/stopproducer")
+	public String stop() {
+		
+		flag = false;
+
+		return "Producer stoped successfully";
 	}
 
 }
 class MyRunnable implements Runnable{
 	
 	KafkaSender kafkaSender;
-	
-	public MyRunnable(KafkaSender kafkaSender){
+	Boolean flag;
+	public MyRunnable(KafkaSender kafkaSender, Boolean flag){
 		this.kafkaSender = kafkaSender;
+		this.flag = flag;
 	}
 	
 	public void run(){
 		Faker faker = new Faker();
-		while(true){
+		while(flag.booleanValue()){
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
