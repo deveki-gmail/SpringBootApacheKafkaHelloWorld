@@ -45,6 +45,12 @@ class MyRunnable implements Runnable{
 	public void run(){
 		Faker faker = new Faker();
 		while(true){
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			kafkaSender.send(faker.hobbit().quote());
 		}
 	}
